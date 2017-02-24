@@ -1,0 +1,55 @@
+#!/bin/bash
+
+#*******************************************************************************
+# Create files ID_PNC_IMG_STUDY_ALL.txt, ID_PNC_IMG_STUDY1.txt id_pnc_img_study2.txt
+#*******************************************************************************
+PWD_STAGING=***
+PWD_RAW_DATA=$2
+PWD_WORK=$3
+PWD_NIFTI=$4
+PWD_DCM2NII=$5
+FN_EXTRACT_SCRIPT=~/project/scripts/extract_PNC_neuroimaging.sh
+FN_ID_LIST=ID_PNC_IMG_STUDY_ALL.txt 
+
+cd $PWD_STAGING
+cat $FN_ID_LIST | while read ASUB
+do 
+	sbatch -J ${ASUB}_extract $FN_EXTRACT_SCRIPT $ASUB $PWD_RAW_DATA $PWD_WORK $PWD_NIFTI $PWD_DCM2NII
+done
+
+#*******************************************************************************
+Compare old vs new niftis of batch 1 in resting state & structural. If Identical, then move on.
+#*******************************************************************************
+
+#*******************************************************************************
+# Free Surfer on Study Batch 2.
+PWD_STAGING=***
+PWD_NIFTI=***
+PWD_FSURF_SUBJECT=***
+FN_FRESSURFER_SCRIPT=~/project/scripts/make_freesurfer_and_suma.sh
+FN_ID_LIST=id_pnc_img_study2.txt
+
+
+cd $PWD_STAGING
+cat $FN_ID_LIST | while read ASUB
+do 
+	FN_NIFTI=${PWD_NIFTI}/${ASUB}.T1_structural.nii.gz
+	[ -e $FN_NIFTI ] && sbatch -J ${ASUB}_extract $FN_FRESSURFER_SCRIPT $ASUB ${PWD_NIFTI}/${ASUB}.T1_structural.nii.gz $PWD_FSURF_SUBJECT
+done
+
+#*******************************************************************************
+# AFNI resting state on Study Batch 2: rest_BP_3mm
+
+
+
+#*******************************************************************************
+
+
+
+
+
+
+
+
+
+
