@@ -44,7 +44,7 @@ pnc1$PE = apply(pnc1[,c("Father_Education","Mother_Education")],1,get_highest_ed
 pnc1 = load_pnc_variables(pnc1, gen_pca, vname = colnames(gen_pca)[grep("PC", colnames(gen_pca))])
 
 # Load variables from roi ------------------------------------------------
-v = c("total_area", "EstimatedTotalIntraCranialVol", "TotalGrayVol", "Left.Hippocampus")
+v = c("total_area", "EstimatedTotalIntraCranialVol", "TotalGrayVol", "Left.Hippocampus", "Right.Hippocampus")
 pnc1 = load_pnc_variables(pnc1, pnc_roi, vname = v)
 
 id_study1 = as.character(read.table("ID.pnc_img_v1.txt", stringsAsFactors = F)$V1)
@@ -55,8 +55,8 @@ pnc1[id_study1,"img_study_version"] = "V1"
 pnc1[id_study2,"img_study_version"] = "V2"
 pnc1$img_study_version = as.factor(pnc1$img_study_version)
 
-
 # Model SES vs area -------------------------------------------------------
+
 q = pnc1;
 q$sexF = (q$sex == "F")*1
 q$med_rating_q = as.numeric(q$med_rating)
@@ -64,10 +64,19 @@ q[which(q$img_study_version=="V2"),"age"] = q[which(q$img_study_version=="V2"),"
 q$age2 = q$age^2
 
 
-q$y = q$total_area
-mod = y ~ age + age2 + age*PE + sexF + PC1 + PC2 + PC3 + PC4 + PC5 + PC6
-run_model(mod,q,"PE")
-#run_model(mod,q[which(q$PC1 > 0 & q$PC2 < 0 & q$age >= 8),],"PE")
+q$y = scale(q$Left.Hippocampus)
+
+source(fn_functions)
+mod_mehta = y ~ age + sexF + PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PE
+mod_noble = y ~ age + age2 + sexF + PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + age*PE
+
+h1 = run_model(mod_noble,q,"PE",model_summary = T)
+h2 = run_model(mod_mehta,q,"PE", model_summary = T)
+h3 = run_model(mod_mehta,q[which(q$PC1 > 0 & q$PC2 < 0 & q$age >= 8),],"PE", model_summary = T)
+h4 = run_model(mod_mehta,q[which(q$PC1 < -0.005 & q$PC2 < 0 & q$age >= 8),],"PE", model_summary = T)
+
+#
+
 
 
 

@@ -35,7 +35,7 @@ get_highest_education = function(s){
   return(out)
 }
 
-run_model = function(mod,Q,test_var){
+run_model = function(mod,Q,test_var, model_summary = F){
   require(car)
   sfit = summary(fit <- lm(mod, Q, na.action = "na.exclude")); 
   v = names(fit$coefficients)[grep(test_var, names(fit$coefficients))];
@@ -43,6 +43,10 @@ run_model = function(mod,Q,test_var){
   names(a)[1:length(v)] = paste("estimate",v,sep=".")
   names(a)[1:length(v)+length(v)] = paste("pvalue",v,sep=".")
   lh = linearHypothesis(fit, v)$Pr[2]
-  out = c(n=sum(sfit$df[1:2]),a, pvalue.joint=lh)
+  if(model_summary){
+    out = sfit
+  }else{
+    out = c(n=sum(sfit$df[1:2]),a, pvalue.joint=lh)
+  }
   return(out)
 }
