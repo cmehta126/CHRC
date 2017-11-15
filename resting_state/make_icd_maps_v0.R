@@ -97,9 +97,9 @@ make_icd = function(fn.4d, fn.gm, fn.prefix, pwd.results, gsr=F){
 
   # Write maps to NIFTI file.
   setwd(pwd.results)
-  fn.a = paste("icd_alpha",fn.prefix, sep=".")
-  fn.b = paste("icd_beta",fn.prefix, sep = ".")
-  fn.r = paste("icd_r2", fn.prefix, sep = ".")
+  fn.a = paste(fn.prefix, "alpha", sep=".")
+  fn.b = paste(fn.prefix, "beta", sep = ".")
+  fn.r = paste(fn.prefix, "r2", sep = ".")
 
   writeNIfTI(map_alpha, filename = fn.a, gzipped = T)
   writeNIfTI(map_beta, filename = fn.b, gzipped = T)

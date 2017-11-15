@@ -25,3 +25,5 @@ echo "Created time series correlation map."
 echo "Fisher transformation of correlation map is in ${FN_OUT}."
 
 echo "Complete."
+
+
