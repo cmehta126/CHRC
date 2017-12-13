@@ -39,6 +39,15 @@ clust(:,1,1) = logP(:,1);
 fnP = 'tmp_P.mgh';
 save_mgh(clust, fnP, M, mr_parms);
 
+fnO = 'tmp2.txt'
+r = {'mri_surfcluster --in ', fnP, ' --subject fsaverage --hemi lh --annot aparc --thmin 2 --sign abs --sum ', fnO};
+[b1, b2] = system(strjoin(r));
 
 
-mri_surfcluster --in tmp_P.mgh --subject fsaverage --hemi lh --annot aparc --thmin 2 --sign abs --sum tmp.txt
+
+
+
+
+
+
+
